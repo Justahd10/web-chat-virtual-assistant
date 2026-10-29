@@ -105,26 +105,24 @@ function createMutation(chatMsgs) {
 }
 
 export const AiChatProvider = ({ children }) => {
-  // Messages state
-  const [chatMsgs, setChatMsgs] = useState(null);
+  // get current messages on window reload
+  const [chatMsgs, setChatMsgs] = useState(getChatSessionMsgs);
 
   const appendUsrMessage = (msgData) => appendUsrMsg(
     msgData, setChatMsgs
   );
 
   // mutation function placeholder
-  let mutation = createMutation(chatMsgs);
-
-  // get current messages on window reload
-  setChatMsgs(getChatSessionMsgs);
+  let mutation;
 
   // request AI response on user message sent
   useEffect(() => mutation.mutate(), [chatMsgs]);
 
   // append to messages list on ai response
-  useEffect(() => appendAiMsg(
-    mutation.data, setChatMsgs
-  ), [mutation.data]);
+  useEffect(() => {
+    mutation = createMutation(chatMsgs);
+    appendAiMsg(mutation.data, setChatMsgs);
+  }, [mutation.data]);
 
   return (
     <AiChatContext.Provider value={{
