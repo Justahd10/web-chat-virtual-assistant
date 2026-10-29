@@ -13,9 +13,9 @@ export const AiChatContext = createContext(null);
  */
 function createMsgTime() {
   return new Date().toLocaleDateString("pt-BR", {
-      'hour': "2-digit",
-      'minute': "2-digit"
-    });
+    'hour': "2-digit",
+    'minute': "2-digit"
+  });
 }
 
 /*
@@ -31,18 +31,21 @@ function createConvId() {
  */
 function getChatSessionMsgs() {
   // Check if chat session exists
-  let msgs = sessionStorage.getItem("aiChat");
+  let sessionData = sessionStorage.getItem("aiChat");
 
-  if (!msgs) {
+  if (!sessionData) {
     // Create chat session
-    msgs = [];
-    sessionStorage.setItem("aiChatMsg", {
+    const chatData = {
       'convId': createConvId(),
       'msgs': []
-    });
+    };
+
+    sessionStorage.setItem("aiChat", JSON.stringify(chatData));
+
+    return []
   }
 
-  return msgs
+  return JSON.parse(sessionData).msgs;
 };
 
 /**
@@ -50,21 +53,24 @@ function getChatSessionMsgs() {
  */
 function appendUsrMsg(msgData, setMsgs) {
 
-  // update chat session data
-  const sessionData = sessionStorage("aiChat");
+  // Get session data
+  let sessionData = sessionStorage.getItem("aiChat");
+  sessionData = JSON.parse(sessionData);
 
-  // Append message sent time
+  // Update session data
   msgData.time = createMsgTime();
 
-  sessionStorage.setItem("aiChat", {
-    ...sessionData.conversationId,
+  sessionData = {
+    ...sessionData.convId,
     ...{
       'msgs': [
         ...sessionData.msgs,
-        ...msgData
+        msgData
       ]
     }
-  });
+  }
+
+  sessionStorage.setItem("aiChat", JSON.stringify(sessionData));
 
   // update chat messages state
   setMsgs([...chatMsgs, msgData]);
@@ -86,26 +92,31 @@ function appendAiMsg(msgData, setMsgs) {
 }
 
 
+function createMutation(chatMsgs) {
+  let sessionData = sessionStorage.getItem("aiChat");
+  sessionData = JSON.parse(sessionData);
+
+  return useHttpClient(
+    sendUsrMsgToAgent, {
+    'method': "POST",
+    'values': [sessionData.convId, chatMsgs.at(-1).content]
+  }
+  );
+}
+
 export const AiChatProvider = ({ children }) => {
   // Messages state
   const [chatMsgs, setChatMsgs] = useState(null);
 
   const appendUsrMessage = (msgData) => appendUsrMsg(
     msgData, setChatMsgs
-  )
-
-  // mutation function
-  const convId = sessionStorage.getItem("aiChat").convId;
-
-  const mutation = useHttpClient(
-    sendUsrMsgToAgent, {
-    'method': "POST",
-    'values': [convId, chatMsgs.at(-1).content]
-  }
   );
 
+  // mutation function placeholder
+  let mutation = createMutation(chatMsgs);
+
   // get current messages on window reload
-  useEffect(getChatSessionMsgs, []);
+  setChatMsgs(getChatSessionMsgs);
 
   // request AI response on user message sent
   useEffect(() => mutation.mutate(), [chatMsgs]);
