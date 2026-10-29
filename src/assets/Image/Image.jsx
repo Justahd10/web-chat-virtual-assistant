@@ -1,5 +1,5 @@
 // Images
-import AiAssistentImg from "./images/virtual-assistent.png"; 
+import AiAssistentImg from "./images/virtual_assistant.png"; 
 
 
 

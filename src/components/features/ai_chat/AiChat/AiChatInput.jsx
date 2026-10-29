@@ -43,7 +43,7 @@ const AiChatInput = () => {
       </label>
 
       <Button.Root type="submit" disabled={!isLoading}>
-        <Button.Icon iconName="" />
+        <Button.Icon iconName="send" />
       </Button.Root>
     </form>
   )

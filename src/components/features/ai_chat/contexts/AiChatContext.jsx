@@ -116,21 +116,25 @@ export const AiChatProvider = ({ children }) => {
   let mutation;
 
   // request AI response on user message sent
-  useEffect(() => mutation.mutate(), [chatMsgs]);
+  useEffect(() => {
+    if (mutation) mutation.mutate()
+  }, [chatMsgs]);
 
   // append to messages list on ai response
   useEffect(() => {
-    mutation = createMutation(chatMsgs);
-    appendAiMsg(mutation.data, setChatMsgs);
-  }, [mutation.data]);
+    if (mutation?.data) {
+      mutation = createMutation(chatMsgs);
+      appendAiMsg(mutation.data, setChatMsgs);
+    }
+  }, [mutation]);
 
   return (
     <AiChatContext.Provider value={{
       chatMsgs,
       appendUsrMessage,
       AiRequest: {
-        'isPending': mutation.isPending,
-        'isError': mutation.isError
+        'isPending': mutation?.isPending,
+        'isError': mutation?.isError
       }
     }}>
       {children}
