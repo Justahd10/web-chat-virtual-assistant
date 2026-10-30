@@ -30,6 +30,7 @@ function getChatSessionData() {
 };
 
 function updateMsgsSession(msgData) {
+  // Get current session data
   let sessionData = getChatSessionData();
 
   // Append new message data
@@ -43,6 +44,8 @@ function updateMsgsSession(msgData) {
 
   // Update chat session
   sessionStorage.setItem("aiChat", sessionData);
+
+  return sessionData
 };
 
 /*
@@ -68,7 +71,7 @@ function getChatSessionMsgs() {
     });
 
     // Start chat session
-    sessionStorage.setItem("aiChat");
+    sessionStorage.setItem("aiChat", chatData);
 
     return []
   }
@@ -79,14 +82,21 @@ function getChatSessionMsgs() {
 /**
  * Append user message to messages list on submit
  */
-function appendUsrMsg(msgData, msgs, setMsgs) {
+function appendUsrMsg(msgData, msgs, setMsgs, mutation) {
+  // Push message time to data
   msgData.time = createMsgTime();
 
   // Update session data
-  updateMsgsSession(msgData);
+  const sessionData = updateMsgsSession(msgData);
 
   // update chat messages state
   setMsgs([...msgs, msgData]);
+
+  // Request ai response
+  mutation.mutate({
+    'convId': sessionData.convId,
+    'usrMsg': msgData.content
+  });
 };
 
 /**
@@ -112,39 +122,17 @@ function handleMutationResult(mutation, msgs, setMsgs) {
   }
 }
 
-function handleMsgsUpdate(mutation, chatMsgs) {
-  if (chatMsgs.length > 0) {
-    // Get chat session data
-    const sessionData = getChatSessionData();
-
-    const lastMsg = chatMsgs.at(-1);
-
-    // Do request
-    if (lastMsg.type === "usr") {
-      mutation.mutate({
-        'convId': sessionData.convId,
-        'usrMsg': chatMsgs.at(-1).content
-      });
-    }
-  }
-}
-
 export const AiChatProvider = ({ children }) => {
   // get current messages on window reload
   const [chatMsgs, setChatMsgs] = useState(getChatSessionMsgs);
 
-  // Create function to on user message submit
-  const appendUsrMessage = (msgData) => appendUsrMsg(
-    msgData, chatMsgs, setChatMsgs
-  );
-
   // Create ai request to on user message submit
   const mutation = useHttpClient(sendUsrMsgToAgent, "POST");
 
-  // request AI response on user message sent
-  useEffect(() => {
-    handleMsgsUpdate(mutation, chatMsgs);
-  }, [chatMsgs]);
+  // Create function to on user message submit
+  const appendUsrMessage = (msgData) => appendUsrMsg(
+    msgData, chatMsgs, setChatMsgs, mutation
+  );
 
   // append to messages list on ai response
   useEffect(() => {

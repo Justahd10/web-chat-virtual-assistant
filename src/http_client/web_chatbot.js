@@ -1,41 +1,35 @@
+const webhookUrl = import.meta.env.VITE_N8N_ENDPOINT;
+
+
+
 /**
  * @param {string} msg
  */
 export default async function sendUsrMsgToAgent(convId, usrMsg) {
-  // Start request result
-  const result = {
-    'success': false,
-    'error': null,
-    'data': null 
-  };
-
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  
   // Try request Ai response
   try {
-    const response = await fetch("", {
+    const response = await fetch(webhookUrl, {
+      'method': "POST",
       'headers': {
         'Content-Type': "application/json"
       },
-      'body': {
+      'body': JSON.stringify({
         'sessionId': convId,
         'usrMsg': usrMsg
-      }
+      })
     });
 
     // response data parsing
-    const data = response.json();
+    const data = await response.json();
 
     // handle HTTP errors
-    if (!response.ok) {
-      result.error = data.error;
-    } else {
-      result.success = true;
-      result.data = data.payload;
-    }
+    if (!response.ok) throw Error("Client error");
+    
+    return data;
 
   } catch (error) {
-    // Handle fetch fails
-    result.error = "FETCH_FAILED";
+    throw Error("Fetch failed");
   }
-
-  return result
 }
