@@ -1,13 +1,86 @@
 /* ai-chat-container */
+.ai-chat-box {
+  z-index: 2;
+  position: fixed;
+  right: 30px;
+  bottom: 10px;
+  display: grid;
+  grid-template-areas: "chat-header" "chat-content" "chat-footer";
+  grid-template-rows: 10% 75% 15%;
+  width: 380px;
+  height: 510px;
+  border-radius: 10px;
+  box-shadow: 0 3px 7px;
+  transition: 
+    scale 0.5s, opacity 0.5s,
+    right 0.5s, bottom 0.5s, 
+    width 0.5s, transform 0.5s;;
+}
 
+@starting-style {
+  .ai-chat-box {
+    scale: 0.8;
+    opacity: 0.8;
+  }
+}
 
 /* ai-chat-header */
+.ai-chat-header {
+  grid-area: chat-header;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+  background-color: #1F4D92;
+  border-radius: 10px 10px 0 0;
+}
+
+.ai-chat-header>button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+}
+
+.ai-chat-header>button>svg {
+  fill: white;
+}
 
 
-/* ai-chat-msgs */
+/* Ai Chat > Content */
+.ai-chat-content {
+  grid-area: chat-content;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 5px;
+  background-color: #F1F4F8;
+}
 
+/* Ai chat > Content > messages */
+.usr-msg,
+.ai-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+  max-width: 80%;
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  transition: scale 1s;
+}
 
-/* ai-chat-msg */
+.usr-msg {
+  background-color: rgb(191, 240, 243);
+  align-self: flex-end;
+  border-radius: 10px 0 10px 10px;
+}
+
+.ai-msg {
+  background-color: rgb(243, 191, 191);
+  align-self: flex-start;
+  border-radius: 0 10px 10px 10px;
+}
 
 
 /* ai-chat-msg-text */
@@ -16,4 +89,53 @@
 /* ai-chat-msg-ts */
 
 
-/* ai-chat-input */
+/* Ai chat > Input */
+.ai-chat-input {
+  display: flex;
+  gap: 10px;
+  height: 100%;
+  width: 100%;
+}
+
+/* Ai chat > Input > Submit button */
+.ai-chat-input {
+  background-color: white;
+  border-radius: 5px 5px;
+}
+
+.ai-chat-input>button {
+  background: none;
+  border: none;
+}
+
+.ai-chat-input>button>svg {
+  fill: #1F4D92;
+}
+
+/* Ai chat > Input > Message field */
+.ai-chat-input>label {
+  display: flex;
+  width: 80%;
+  padding: 0 0 0 10px;
+}
+
+.ai-chat-input textarea {
+  font-size: 16px;
+  font-family: Inter, sans-serif;
+  border: none;
+  width: 100%;
+  padding: 10px 0 0 5px;
+  resize: none;
+}
+
+.ai-chat-input textarea:focus {
+  outline: none;
+}
+
+/* Ai chat > States */
+.ai-chat-box--extended {
+  right: 50%;
+  bottom: 50%;
+  transform: translate(50%, 50%);
+  width: 600px;
+}
