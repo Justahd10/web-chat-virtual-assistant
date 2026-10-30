@@ -11,12 +11,16 @@ import "./AiChat.css";
 
 
 
-const AiChatInput = () => {
+/**
+ * @param {import('../../../../type.js').AiChatInputInterface} inputOptions
+ */
+const AiChatInput = ({ placeholder }) => {
   // Chat messages context
   const { appendUsrMessage } = useContext(AiChatContext);
 
   // Form state
   const {
+    reset,
     register,
     handleSubmit,
     formState: { isLoading }
@@ -26,10 +30,13 @@ const AiChatInput = () => {
   const onSubmit = (data) => {
     if (!isLoading) {
       // clean text area content
-
+      reset();
 
       // call provider method
-      appendUsrMessage
+      appendUsrMessage({
+        'type': "usr",
+        'content': data.usrMessage
+      })
     }
   };
 
@@ -37,12 +44,13 @@ const AiChatInput = () => {
     <form className="ai-chat-input"
       onSubmit={handleSubmit(onSubmit)}>
       <label>
-        <textarea
+        <textarea placeholder={placeholder}
           {...register("usrMessage")}>
         </textarea>
       </label>
 
-      <Button.Root type="submit" disabled={!isLoading}>
+      <Button.Root type="submit" 
+      disabled={isLoading}>
         <Button.Icon iconName="send" />
       </Button.Root>
     </form>

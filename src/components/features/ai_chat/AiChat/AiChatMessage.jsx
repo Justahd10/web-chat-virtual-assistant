@@ -7,7 +7,11 @@ import "./AiChat.css";
  * @param {string} msgType
  */
 function resolveMsgStyles(msgType) {
+  if (msgType === "usr") {
+    return "usr-msg"
+  }
 
+  return "ai-msg"
 }
 
 /**

@@ -37,10 +37,15 @@
  */
 
 /**
+ * @typedef {object} AiChatInputInterface
+ * @property {string} placeholder
+ */
+
+/**
  * @typedef {object} AiChatMsgInterface
- * @property {"ai" | "user"} type
+ * @property {"ai" | "usr"} type
  * @property {string} content
- * @property {number} msgTime
+ * @property {string} time
  */
 
 /**

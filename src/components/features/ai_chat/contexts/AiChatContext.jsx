@@ -12,7 +12,10 @@ export const AiChatContext = createContext(null);
  * Create sent time of chat message when created
  */
 function createMsgTime() {
-  return new Date().toLocaleDateString("pt-BR", {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  return new Date().toLocaleTimeString("pt-BR", {
+    'timeZone': tz,
     'hour': "2-digit",
     'minute': "2-digit"
   });
@@ -59,21 +62,18 @@ function appendUsrMsg(msgData, setMsgs) {
 
   // Update session data
   msgData.time = createMsgTime();
-
   sessionData = {
-    ...sessionData.convId,
-    ...{
-      'msgs': [
-        ...sessionData.msgs,
-        msgData
-      ]
-    }
+    ...sessionData,
+    'msgs': [
+      ...sessionData.msgs,
+      msgData
+    ]
   }
 
   sessionStorage.setItem("aiChat", JSON.stringify(sessionData));
 
   // update chat messages state
-  setMsgs([...chatMsgs, msgData]);
+  setMsgs(sessionData.msgs);
 };
 
 /**
