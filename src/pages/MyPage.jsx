@@ -25,7 +25,8 @@ const MyPage = () => {
           <AiChat.Root>
             <AiChat.Header />
             <AiChat.Content />
-            <AiChat.Input />
+            <AiChat.Input 
+            placeholder="Sua mensagem..."/>
           </AiChat.Root>
         )
       }
