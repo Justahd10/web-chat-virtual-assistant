@@ -48,13 +48,6 @@ function updateMsgsSession(msgData) {
   return sessionData
 };
 
-/*
-* Generate custom id for AI conversation session
-*/
-function createConvId() {
-  return 1234
-}
-
 /**
  * Fetch AI web chat messages from sessionStorage
  * on window reload
@@ -66,7 +59,7 @@ function getChatSessionMsgs() {
   if (!sessionData) {
     // Create initial data
     const chatData = JSON.stringify({
-      'convId': createConvId(),
+      'convId': crypto.randomUUID(),
       'msgs': []
     });
 
@@ -110,7 +103,7 @@ function handleMutationResult(mutation, msgs, setMsgs) {
     // Create AI message data
     const aiMsgData = {
       'type': "ai",
-      'content': mutation.data.payload.message,
+      'content': mutation.data.payload.msg,
       'time': msgTime
     };
 
