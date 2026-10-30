@@ -15,14 +15,11 @@ import "./ChatWidget.css";
  */
 const ChatWidgetRoot = ({ children }) => {
   return (
-    <div>{children}</div>
+    <div className="chat-widget">{children}</div>
   )
 };
 
-/**
- * @param {import('../../../../type.js').WidgetButtonInterface} buttonOptions
- */
-const ChatWidgetButton = ({ onClick }) => {
+const ChatWidgetButton = () => {
   // Chat visibility context
   const { dispatch } = useContext(AiChatVisibilityContext);
 
