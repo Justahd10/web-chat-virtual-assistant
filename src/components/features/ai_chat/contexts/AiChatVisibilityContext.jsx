@@ -7,17 +7,15 @@ export const AiChatVisibilityContext = createContext();
 
 
 export function chatVisibilityReducer(state, action) {
+
   switch (action) {
 
-    case "visible": 
-      state.isVisible = !state.isVisible;
-      break;
+    case "visible":
+      return { ...state, isVisible: !state.isVisible };
       
     case "extended":
-      state.isExtended = !state.isExtended;
+      return { ...state, isExtended: !state.isExtended };
   }
-
-  return state
 }
 
 export const AiChatVisibilityProvider = ({ children }) => {
