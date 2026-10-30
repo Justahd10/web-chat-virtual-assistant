@@ -1,0 +1,35 @@
+/* Widget */
+.chat-widget {
+  z-index: 1;
+  position: fixed;
+  right: 30px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+}
+
+/* Widget > Button */
+.chat-widget button {
+  background: none;
+  border: none;
+  clip-path: circle(45%);
+  transition: background-color 0.5s, scale 0.5s;
+}
+
+.chat-widget button:hover {
+  background-color: #BFCAD9;
+  scale: 1.1;
+}
+
+.chat-widget img {
+  width: 100px;
+}
+
+/* Widget > Label */
+.chat-widget span {
+  font-family: "Inter";
+  font-size: 16px;
+  font-weight: 600;
+}
