@@ -21,6 +21,30 @@ function createMsgTime() {
   });
 }
 
+function getChatSessionData() {
+  let sessionData = sessionStorage.getItem("aiChat");
+
+  if (sessionData) return JSON.parse(sessionData);
+
+  return sessionData
+};
+
+function updateMsgsSession(msgData) {
+  let sessionData = getChatSessionData();
+
+  // Append new message data
+  sessionData = JSON.stringify({
+    ...sessionData,
+    'msgs': [
+      ...sessionData.msgs,
+      msgData
+    ]
+  })
+
+  // Update chat session
+  sessionStorage.setItem("aiChat", sessionData);
+};
+
 /*
 * Generate custom id for AI conversation session
 */
@@ -34,99 +58,98 @@ function createConvId() {
  */
 function getChatSessionMsgs() {
   // Check if chat session exists
-  let sessionData = sessionStorage.getItem("aiChat");
+  const sessionData = getChatSessionData();
 
   if (!sessionData) {
-    // Create chat session
-    const chatData = {
+    // Create initial data
+    const chatData = JSON.stringify({
       'convId': createConvId(),
       'msgs': []
-    };
+    });
 
-    sessionStorage.setItem("aiChat", JSON.stringify(chatData));
+    // Start chat session
+    sessionStorage.setItem("aiChat");
 
     return []
   }
 
-  return JSON.parse(sessionData).msgs;
+  return sessionData.msgs;
 };
 
 /**
  * Append user message to messages list on submit
  */
-function appendUsrMsg(msgData, setMsgs) {
-
-  // Get session data
-  let sessionData = sessionStorage.getItem("aiChat");
-  sessionData = JSON.parse(sessionData);
+function appendUsrMsg(msgData, msgs, setMsgs) {
+  msgData.time = createMsgTime();
 
   // Update session data
-  msgData.time = createMsgTime();
-  sessionData = {
-    ...sessionData,
-    'msgs': [
-      ...sessionData.msgs,
-      msgData
-    ]
-  }
-
-  sessionStorage.setItem("aiChat", JSON.stringify(sessionData));
+  updateMsgsSession(msgData);
 
   // update chat messages state
-  setMsgs(sessionData.msgs);
+  setMsgs([...msgs, msgData]);
 };
 
 /**
  * Append AI response to messages list on response
  */
-function appendAiMsg(msgData, setMsgs) {
-  if (msgData) {
+function handleMutationResult(mutation, msgs, setMsgs) {
+  if (mutation.data) {
+    // Append data to message object
     const msgTime = createMsgTime();
 
-    setMsgs([...chatMsgs, {
+    // Create AI message data
+    const aiMsgData = {
       'type': "ai",
-      'content': data.text,
+      'content': mutation.data.payload.message,
       'time': msgTime
-    }])
+    };
+
+    // Update session storage
+    updateMsgsSession(aiMsgData);
+
+    // Update messages  list
+    setMsgs([...msgs, aiMsgData]);
   }
 }
 
+function handleMsgsUpdate(mutation, chatMsgs) {
+  if (chatMsgs.length > 0) {
+    // Get chat session data
+    const sessionData = getChatSessionData();
 
-function createMutation(chatMsgs) {
-  let sessionData = sessionStorage.getItem("aiChat");
-  sessionData = JSON.parse(sessionData);
+    const lastMsg = chatMsgs.at(-1);
 
-  return useHttpClient(
-    sendUsrMsgToAgent, {
-    'method': "POST",
-    'values': [sessionData.convId, chatMsgs.at(-1).content]
+    // Do request
+    if (lastMsg.type === "usr") {
+      mutation.mutate({
+        'convId': sessionData.convId,
+        'usrMsg': chatMsgs.at(-1).content
+      });
+    }
   }
-  );
 }
 
 export const AiChatProvider = ({ children }) => {
   // get current messages on window reload
   const [chatMsgs, setChatMsgs] = useState(getChatSessionMsgs);
 
+  // Create function to on user message submit
   const appendUsrMessage = (msgData) => appendUsrMsg(
-    msgData, setChatMsgs
+    msgData, chatMsgs, setChatMsgs
   );
 
-  // mutation function placeholder
-  let mutation;
+  // Create ai request to on user message submit
+  const mutation = useHttpClient(sendUsrMsgToAgent, "POST");
 
   // request AI response on user message sent
   useEffect(() => {
-    if (mutation) mutation.mutate()
+    handleMsgsUpdate(mutation, chatMsgs);
   }, [chatMsgs]);
 
   // append to messages list on ai response
   useEffect(() => {
-    if (mutation?.data) {
-      mutation = createMutation(chatMsgs);
-      appendAiMsg(mutation.data, setChatMsgs);
-    }
-  }, [mutation]);
+    handleMutationResult(mutation, chatMsgs, setChatMsgs);
+  }, [mutation.data]);
 
   return (
     <AiChatContext.Provider value={{
