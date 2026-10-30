@@ -16,19 +16,21 @@ import "./AiChat.css";
  */
 const AiChatInput = ({ placeholder }) => {
   // Chat messages context
-  const { appendUsrMessage } = useContext(AiChatContext);
+  const {
+    appendUsrMessage,
+    AiRequest: { isPending }
+  } = useContext(AiChatContext);
 
   // Form state
   const {
     reset,
     register,
     handleSubmit,
-    formState: { isLoading }
   } = useForm();
 
   // Submit function
   const onSubmit = (data) => {
-    if (!isLoading) {
+    if (!isPending) {
       // clean text area content
       reset();
 
@@ -50,7 +52,7 @@ const AiChatInput = ({ placeholder }) => {
       </label>
 
       <Button.Root type="submit" 
-      disabled={isLoading}>
+      disabled={isPending}>
         <Button.Icon iconName="send" />
       </Button.Root>
     </form>
