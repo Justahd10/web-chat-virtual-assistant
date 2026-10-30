@@ -5,7 +5,7 @@ import AiChatError from "./AiChatError.jsx";
 // Contexts
 import { AiChatContext } from "../contexts/AiChatContext.jsx";
 // Hooks
-import { useContext } from "react";
+import { useEffect, useContext, useRef } from "react";
 // Styles
 import "./AiChat.css";
 
@@ -26,6 +26,11 @@ function renderMessages(msgs) {
   )
 };
 
+function handleChatScroll(chatRef) {
+  chatRef.current.scrollTop =
+    chatRef.current.scrollHeight
+}
+
 const AiChatContent = () => {
   // Ai chat messages state
   const {
@@ -39,8 +44,16 @@ const AiChatContent = () => {
   // Messages rendering
   const msgs = renderMessages(chatMsgs);
 
+  // Create chat reference
+  const chatRef = useRef(null);
+
+  // Messages update listener
+  useEffect(() => {
+    if (chatRef.current) handleChatScroll(chatRef)
+  }, [chatMsgs])
+
   return (
-    <div className="ai-chat-content">
+    <div className="ai-chat-content" ref={chatRef}>
       {msgs}
       {isPending && <Loader type="dots"/>}
       {isError && <AiChatError />}
