@@ -10,11 +10,11 @@ export function chatVisibilityReducer(state, action) {
   switch (action) {
 
     case "visible": 
-      state.visible = !state.visible;
+      state.isVisible = !state.isVisible;
       break;
       
     case "extended":
-      state.extended = !state.extended;
+      state.isExtended = !state.isExtended;
   }
 
   return state
@@ -24,8 +24,8 @@ export const AiChatVisibilityProvider = ({ children }) => {
   // Ai chat visibility state handling
   const [chatVisibility, dispatch] = useReducer(
     chatVisibilityReducer, {
-      "visible": false,
-      "extended": false
+      "isVisible": false,
+      "isExtended": false
     }
   );
 
