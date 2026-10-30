@@ -40,7 +40,7 @@ const AiChatContent = () => {
   const msgs = renderMessages(chatMsgs);
 
   return (
-    <div className="ai-chat-msgs">
+    <div className="ai-chat-content">
       {msgs}
       {isPending && <AiChatLoader />}
       {isError && <AiChatError />}
