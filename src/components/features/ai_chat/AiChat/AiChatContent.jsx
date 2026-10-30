@@ -1,6 +1,6 @@
 // Components
 import AiChatMessage from "./AiChatMessage.jsx";
-import AiChatLoader from "./AiChatLoader.jsx";
+import Loader from "../../../common/Loader/Loader.jsx";
 import AiChatError from "./AiChatError.jsx";
 // Contexts
 import { AiChatContext } from "../contexts/AiChatContext.jsx";
@@ -42,7 +42,7 @@ const AiChatContent = () => {
   return (
     <div className="ai-chat-content">
       {msgs}
-      {isPending && <AiChatLoader />}
+      {isPending && <Loader type="dots"/>}
       {isError && <AiChatError />}
     </div>
   )

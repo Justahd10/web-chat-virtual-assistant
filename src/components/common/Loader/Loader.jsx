@@ -5,12 +5,12 @@ import "./Loader.css";
 /**
  * @typedef {import('../../../type.js').LoaderInterface} loaderOptions 
  */
-const Loader = ({ type }) => {
+const Loader = ({ type, size = "sm" }) => {
   // resolve style
-  const style = `${type}-loader`
+  const styles = [`${type}-loader`, `${type}-loader--${size}`].join(" ")
   
   return (
-    <div className={style}></div>
+    <div className={styles}></div>
   )
 };
 

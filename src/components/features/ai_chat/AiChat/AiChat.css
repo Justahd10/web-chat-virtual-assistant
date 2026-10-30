@@ -82,12 +82,20 @@
   border-radius: 0 10px 10px 10px;
 }
 
+/* Ai chat > Content > Loading state */
+.ai-chat-content > .dots-loader {
+  background: radial-gradient(
+    circle closest-side,#024490 90%,#02449000
+  ) 0/calc(100%/3) 100% space;
+}
 
-/* ai-chat-msg-text */
-
-
-/* ai-chat-msg-ts */
-
+/* Ai chat > Content > Error message */
+.ai-chat-err-msg {
+  text-align: center;
+  font-family: "Inter";
+  font-size: 16px;
+  color: red;
+}
 
 /* Ai chat > Input */
 .ai-chat-input {
