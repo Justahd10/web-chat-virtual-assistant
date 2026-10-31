@@ -42,12 +42,12 @@ function updateMsgsSession(msgData) {
       ...sessionData.msgs,
       msgData
     ]
-  })
+  });
 
   // Update chat session
   sessionStorage.setItem("aiChat", sessionData);
 
-  return sessionData
+  return JSON.parse(sessionData);
 };
 
 /**
@@ -61,7 +61,7 @@ function getChatSessionMsgs() {
   if (!sessionData) {
     // Create initial data
     const chatData = JSON.stringify({
-      'convId': crypto.randomUUID(),
+      'sessionId': crypto.randomUUID(),
       'msgs': []
     });
 
@@ -88,10 +88,10 @@ function appendUsrMsg(msgData, msgs, setMsgs, mutation) {
   setMsgs([...msgs, msgData]);
 
   // Request ai response
-  mutation.mutate({
-    'convId': sessionData.convId,
-    'usrMsg': msgData.content
-  });
+  mutation.mutate([
+    sessionData.sessionId,
+    msgData.content
+  ]);
 };
 
 /**

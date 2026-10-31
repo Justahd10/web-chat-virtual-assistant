@@ -14,10 +14,7 @@ export default function useHttpClient(reqFn, method) {
       const mutation = useMutation({
         'mutationFn': async (values) => {
 
-          return await reqFn(
-            values.convId,
-            values.usrMsg
-          )
+          return await reqFn(...values)
         }
       });
 

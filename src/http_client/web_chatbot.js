@@ -5,9 +5,7 @@ const webhookUrl = import.meta.env.VITE_N8N_ENDPOINT;
 /**
  * @param {string} msg
  */
-export default async function sendUsrMsgToAgent(convId, usrMsg) {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  
+export default async function sendUsrMsgToAgent(sessionId, usrMsg) {
   // Try request Ai response
   try {
     const response = await fetch(webhookUrl, {
@@ -16,7 +14,7 @@ export default async function sendUsrMsgToAgent(convId, usrMsg) {
         'Content-Type': "application/json"
       },
       'body': JSON.stringify({
-        'sessionId': convId,
+        'sessionId': sessionId,
         'usrMsg': usrMsg
       })
     });
