@@ -7,14 +7,13 @@ import { AiChatProvider } from "../contexts/AiChatContext.jsx";
 import { AiChatVisibilityContext } from "../contexts/AiChatVisibilityContext.jsx";
 // Hooks
 import { useContext } from "react";
-import useWidthQuery from "../../../../hooks/useWidthQuery.jsx";
 // Styles
 import "./AiChat.css";
 
 
 
-function resolveStyles(extended, widthMatches) {
-  if (extended && !widthMatches) {
+function resolveStyles(extended) {
+  if (extended) {
     return "ai-chat-box ai-chat-box--extended"
   };
 
@@ -30,11 +29,8 @@ const AiChatRoot = ({ children }) => {
     chatVisibility: { isExtended }
   } = useContext(AiChatVisibilityContext);
 
-  // get window width state
-  const { widthMatches } = useWidthQuery("625");
-
   // Handle styles
-  const styles = resolveStyles(isExtended, widthMatches);
+  const styles = resolveStyles(isExtended);
   
   return (
     <div className={styles}>
