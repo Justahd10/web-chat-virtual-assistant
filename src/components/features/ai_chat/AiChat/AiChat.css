@@ -157,6 +157,10 @@
     height: 100%;
   }
 
+  .ai-chat-box--extended {
+    transform: none;
+  }
+
   .ai-chat-header {
     border-radius: 0;
   }
