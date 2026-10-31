@@ -12,8 +12,10 @@ export const AiChatContext = createContext(null);
  * Create sent time of chat message when created
  */
 function createMsgTime() {
+  // Get timezone
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  // Create sent time
   return new Date().toLocaleTimeString("pt-BR", {
     'timeZone': tz,
     'hour': "2-digit",

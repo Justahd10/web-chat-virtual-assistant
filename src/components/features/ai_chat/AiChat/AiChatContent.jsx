@@ -15,20 +15,22 @@ import "./AiChat.css";
  * @param {Array<import("../../../../type.js").AiChatMsgInterface>} msgs
  */
 function renderMessages(msgs) {
-  return msgs.map((msg, index) =>  (
-      <AiChatMessage
-        key={msg.id ?? index}
-        type={msg.type}
-        content={msg.content}
-        msgTime={msg.time}
-      />
-    )
+  return msgs.map((msg, index) => (
+    <AiChatMessage
+      key={msg.id ?? index}
+      type={msg.type}
+      content={msg.content}
+      msgTime={msg.time}
+    />
+  )
   )
 };
 
 function handleChatScroll(chatRef) {
-  chatRef.current.scrollTop =
-    chatRef.current.scrollHeight
+  if (chatRef.current) {
+    chatRef.current.scrollTop =
+      chatRef.current.scrollHeight
+  }
 }
 
 const AiChatContent = () => {
@@ -48,14 +50,12 @@ const AiChatContent = () => {
   const chatRef = useRef(null);
 
   // Messages update listener
-  useEffect(() => {
-    if (chatRef.current) handleChatScroll(chatRef)
-  }, [chatMsgs])
+  useEffect(() => handleChatScroll(chatRef), [chatMsgs])
 
   return (
     <div className="ai-chat-content" ref={chatRef}>
       {msgs}
-      {isPending && <Loader type="dots"/>}
+      {isPending && <Loader type="dots" />}
       {isError && <AiChatError />}
     </div>
   )
